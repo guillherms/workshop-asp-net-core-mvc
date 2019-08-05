@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SalesWebMvc.Models;
+using SalesWebMvc.Models.ViewModels;
 using SalesWebMvc.Services;
 
 namespace SalesWebMvc.Controllers
@@ -12,14 +13,15 @@ namespace SalesWebMvc.Controllers
     {
 
         private readonly SellerService _sellerService;
+        private readonly DepartamentService _departamentService;
+        
 
-        //private readonly SalesWebMvcContext _context;
 
-
-        public SellersController(SellerService sellerService)
+        public SellersController(SellerService sellerService,DepartamentService departamentService)
         {
             _sellerService = sellerService;
-            //context = _context;
+            _departamentService = departamentService;
+            
         }
 
         public IActionResult Index()
@@ -30,19 +32,11 @@ namespace SalesWebMvc.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            var departaments = _departamentService.FindAll();
+            var viewModel = new SellerFormViewModel { Departaments = departaments };
+            return View(viewModel);
         }
-        ////    public async Task<IActionResult> Create([Bind("Id, Name, Email, BirthDate, BaseSalary, Departament")] Seller seller)
-        ////    {
-        //        if (ModelState.IsValid)
-        //        {
-        //            _context.Add(seller);
-        //            await _context.SaveChangesAsync();
-        //            /*return RedirectToAction(nameof(Index));*/
-        //        }
-        //        return View(seller);
-        //    }
-        //}
+ 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Seller seller)
